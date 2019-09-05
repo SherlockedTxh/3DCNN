@@ -69,7 +69,7 @@ def PDB_is_in_list(PDB_entry,PDB_list):
 	return False
 
 def center_and_transform(label,get_position):
-
+	# 以CA为中心做坐标系并旋转
 	reference = get_position["CA"]
 	axis_x = numpy.array(get_position["N"]) - numpy.array(get_position["CA"])  
 	pseudo_axis_y = numpy.array(get_position["C"]) - numpy.array(get_position["CA"])  
@@ -87,6 +87,7 @@ def center_and_transform(label,get_position):
 	return [reference,transform]
 
 def dist(cor1,cor2):
+	#计算两点距离
 	return math.sqrt((cor1[0]-cor2[0])**2+(cor1[1]-cor2[1])**2+(cor1[2]-cor2[2])**2)
 
 def find_actual_pos(my_kd_tree,cor,PDB_entries):
@@ -96,6 +97,7 @@ def find_actual_pos(my_kd_tree,cor,PDB_entries):
 	return PDB_entries[i]
 
 def get_position_dict(all_PDB_atoms):
+	#获取所有原子坐标
 	get_position={}
 	for a in all_PDB_atoms:
 		get_position[a.atom]=[a.x,a.y,a.z]
@@ -143,6 +145,7 @@ def get_bond_energy(box_ori,new_pos_in_box):
 	return [box_ori,new_pos_in_box]
 
 def write_box_files(box_dir,del_dir,back_dir,box_ori,new_pos_in_box,deleted_res,backbone,PDB_ID,num,label):
+	#未使用？
 	box_file=open(box_dir+"/box_"+PDB_ID+"_"+str(num)+"_"+str(label)+".pdb",'w')
 	deleted_res_file=open(del_dir+"/cen_res_"+PDB_ID+"_"+str(num)+"_"+str(label)+".pdb",'w')
 	backbone_file=open(back_dir+"/back_"+PDB_ID+"_"+str(num)+"_"+str(label)+".pdb",'w')
@@ -160,6 +163,7 @@ def write_box_files(box_dir,del_dir,back_dir,box_ori,new_pos_in_box,deleted_res,
 	backbone_file.close()
 
 def load_train_txt_file():
+	#读取PDB_family_train.txt中所有pdb文件名，测试时不需要
 	PDB_train_file = open(windows_dir_pre+'/data/PDB_family_train/PDB_family_train.txt')
 	pdb_train_dir = windows_dir_pre+'/data/PDB_family_train'
 	PDB_train_Set = Set()
@@ -173,6 +177,7 @@ def load_train_txt_file():
 
 
 def grab_PDB(entry_list):
+	#获取每个以ATOM开头的行信息
 	ID_dict=collections.OrderedDict()
 	all_pos=[]
 	all_lines=[]
@@ -237,7 +242,7 @@ def grab_PDB(entry_list):
 	return MODELS
 
 def load_dict(dict_name):
-	
+	#统计每种氨基酸个数
 	if os.path.isfile(os.path.join('../data/DICT',dict_name)):
 		with open(os.path.join('../data/DICT',dict_name)) as f:
 			tmp_dict = json.load(f)
@@ -254,6 +259,7 @@ def load_dict(dict_name):
 	return res_count_dict
 
 def find_grid_points(all_x,all_y,all_z,grid_size=10):
+	#在网格中撒点
 	x_min=min(all_x)
 	x_max=max(all_x)
 	y_min=min(all_y)
@@ -431,41 +437,52 @@ if __name__ == '__main__':
 	PDBs = PDB_train_Set
 
 	res_count_dict={0:0,1:0,2:0,3:0,4:0,5:0,6:0,7:0,8:0,9:0,10:0,11:0,12:0,13:0,14:0,15:0,16:0,17:0,18:0,19:0}
-	count=0
+	#count=0
 	for PDB_ID in PDBs:
-		print 'PDB_ID file:'+PDB_ID+'.pdb'
-		count=count+1
-		print count
+		#print 'PDB_ID file:'+PDB_ID+'.pdb'
+		#count=count+1
+		#print count
 		if os.path.isfile(PDB_DIR+PDB_ID+'.pdb'):
-			print PDB_ID
+			#print PDB_ID
 			pdb_file = open(PDB_DIR+PDB_ID+'.pdb')
 			infile=list(pdb_file)
 			MODELS=grab_PDB(infile)
 			[ID_dict,all_pos,all_lines, all_atom_type, PDB_entries, all_x, all_y , all_z] =MODELS[0]
 
 			if len(all_pos)>0:
-				my_kd_tree = scipy.spatial.KDTree(all_pos)
-				pos = find_grid_points(all_x,all_y,all_z)
+				# 撒点在这里
+				# my_kd_tree = scipy.spatial.KDTree(all_pos)
+				# pos = find_grid_points(all_x,all_y,all_z)
+
 				actual_pos=[]
 				ctr_pos=[]
 				visited=[]
 
-				for i in range(0,len(pos)):
-					clo=find_actual_pos(my_kd_tree, pos[i], PDB_entries)
-					if not PDB_is_in_list(clo,actual_pos): #and find_actual_pos(pos[i])[0]<10 
-						actual_pos.append(clo)
+				# for i in range(0,len(pos)):
+				# 	clo=find_actual_pos(my_kd_tree, pos[i], PDB_entries)
+				# 	if not PDB_is_in_list(clo,actual_pos): #and find_actual_pos(pos[i])[0]<10 
+				# 		actual_pos.append(clo)
 
-				for PDB_a in actual_pos:
-					chain_ID=PDB_a.chain_ID
-					res_atoms=ID_dict[chain_ID]
-					res=PDB_a.res
-					if res in res_label_dict.keys():
-						label=res_label_dict[res]
-						get_position=get_position_dict(res_atoms)
-						if "CA" in get_position.keys():
-							ctr=get_position["CA"]
-							if ctr not in visited:
-								visited.append(ctr)
+				# for PDB_a in actual_pos:
+				# 	chain_ID=PDB_a.chain_ID
+				# 	res_atoms=ID_dict[chain_ID]
+				# 	res=PDB_a.res
+				# 	if res in res_label_dict.keys():
+				# 		label=res_label_dict[res]
+				# 		get_position=get_position_dict(res_atoms)
+				# 		if "CA" in get_position.keys():
+				# 			ctr=get_position["CA"]
+				# 			if ctr not in visited:
+				# 				visited.append(ctr)
+				# 				ctr_pos.append([ctr,chain_ID,label])
+
+				# TODO 沿着链处理氨基酸
+				for chain_ID in ID_dict.keys():
+					for i in range(0,len(ID_dict[chain_ID])):
+						if ID_dict[chain_ID][i].res in res_label_dict.keys():
+							label=res_label_dict[ID_dict[chain_ID][i].res]
+							if(ID_dict[chain_ID][i].atom=='CA'):
+								ctr=[ID_dict[chain_ID][i].x,ID_dict[chain_ID][i].y,ID_dict[chain_ID][i].z]
 								ctr_pos.append([ctr,chain_ID,label])
 
 				for pts in ctr_pos:
@@ -486,7 +503,7 @@ if __name__ == '__main__':
 				# 	if (len(res_container_dict[label]) > 0):
 				# 		sample_time_t = numpy.array(res_container_dict[label])
 				# 		res_container_dict[label] = []
-                #
+                
 				# 		sample_time_t.dump(
 				# 			dat_dir + '\\' + label_res_dict[label] + "_" + str(res_count_dict[label]) + '.dat')
 				# 		res_count_dict[label] = res_count_dict[label] + 1

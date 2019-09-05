@@ -51,9 +51,10 @@ def integrate_20_AA_numpy(dict_name,in_dir, out_dir, num_3d_pixel, num_of_channe
     
     print ("integrating data ... ")
     
-    for label in range (0,20):
-        mask=random.sample(xrange(res_count_dict[label]), min_data)
-        res_files_dict[label]=mask
+    # 测试时不需要平衡
+    # for label in range (0,20):
+    #     mask=random.sample(xrange(res_count_dict[label]), min_data)
+    #     res_files_dict[label]=mask
         
     for part in range(0,num_of_parts):
         print "part:"+str(part)
