@@ -418,10 +418,9 @@ if __name__ == '__main__':
 	y_dim=box_size
 	z_dim=box_size
 
-	d_name = 'train'
-	PDB_DIR = windows_dir_pre+'/data/PDB_family_'+d_name+'/'
+	PDB_DIR = windows_dir_pre+'/data/T0864/'
 	dat_dir = windows_dir_pre+'/data/RAW_DATA/'
-	dict_name = 'train_20AA_boxes.json'
+	dict_name = '/train_20AA_boxes_'
 	
 	sample_block=1000
 	samples=[]
@@ -431,20 +430,20 @@ if __name__ == '__main__':
 
 	if not os.path.exists(dat_dir):
 		os.makedirs(dat_dir)
-	print "begin load_train_txt_file()......"
-	PDB_train_Set = load_train_txt_file()
-	print "finish load_train_txt_file()......"
-	PDBs = PDB_train_Set
+	# print "begin load_train_txt_file()......"
+	# PDB_train_Set = load_train_txt_file()
+	# print "finish load_train_txt_file()......"
+	# PDBs = PDB_train_Set
 
 	res_count_dict={0:0,1:0,2:0,3:0,4:0,5:0,6:0,7:0,8:0,9:0,10:0,11:0,12:0,13:0,14:0,15:0,16:0,17:0,18:0,19:0}
 	#count=0
-	for PDB_ID in PDBs:
+	for filename in os.listdir(PDB_DIR):
 		#print 'PDB_ID file:'+PDB_ID+'.pdb'
 		#count=count+1
 		#print count
-		if os.path.isfile(PDB_DIR+PDB_ID+'.pdb'):
+		if (1):
 			#print PDB_ID
-			pdb_file = open(PDB_DIR+PDB_ID+'.pdb')
+			pdb_file = open(PDB_DIR+filename)
 			infile=list(pdb_file)
 			MODELS=grab_PDB(infile)
 			[ID_dict,all_pos,all_lines, all_atom_type, PDB_entries, all_x, all_y , all_z] =MODELS[0]
@@ -488,32 +487,35 @@ if __name__ == '__main__':
 				for pts in ctr_pos:
 					X_smooth, label, reference, box_ori, new_pos_in_box, valid_box  = pts_to_Xsmooth(MODELS,pts,atom_density,num_of_channels,x_dim,pixel_size,num_3d_pixel,box_size,mode)
 					if valid_box:
-						res_container_dict[label].append(X_smooth)
+						# res_container_dict[label].append(X_smooth)
 						
-						if(len(res_container_dict[label])==1000):
-							sample_time_t = numpy.array(res_container_dict[label])
-							res_container_dict[label]=[]
+						# 每种氨基酸分开存，每1000个存一个.dat
+						# TODO 所有保存到一个.dat
+						# if(len(res_container_dict[label])==1000):
+						# 	sample_time_t = numpy.array(res_container_dict[label])
+						# 	res_container_dict[label]=[]
 							
-							sample_time_t.dump(dat_dir+'/'+label_res_dict[label]+"_"+str(res_count_dict[label])+'.dat')
-							res_count_dict[label]=res_count_dict[label]+1
-							with open(os.path.join(windows_dir_pre+'/data/DICT',dict_name), 'w') as f:
-								json.dump(res_count_dict, f)
-								#print "dump dictionary..."
-				# for label in range(0,20):
-				# 	if (len(res_container_dict[label]) > 0):
-				# 		sample_time_t = numpy.array(res_container_dict[label])
-				# 		res_container_dict[label] = []
-                
-				# 		sample_time_t.dump(
-				# 			dat_dir + '\\' + label_res_dict[label] + "_" + str(res_count_dict[label]) + '.dat')
-				# 		res_count_dict[label] = res_count_dict[label] + 1
-				# 		with open(os.path.join(windows_dir_pre + '\\data\\DICT', dict_name), 'w') as f:
-				# 			json.dump(res_count_dict, f)
-				# 			print "dump dictionary..."
+						# 	sample_time_t.dump(dat_dir+'/'+label_res_dict[label]+"_"+str(res_count_dict[label])+'.dat')
+						# 	res_count_dict[label]=res_count_dict[label]+1
+						# 	with open(os.path.join(windows_dir_pre+'/data/DICT',dict_name), 'w') as f:
+						# 		json.dump(res_count_dict, f)
+						# 		print "dump dictionary..."
+
+						tmp = []
+						tmp.append((X_smooth),label)
+						sample_time_t = numpy.array(tmp)
+						tmp=[]
+
+						sample_time_t.dump(dat_dir+'/'+filename+'.dat')
+						res_count_dict[label]=res_count_dict[label]+1
+						with open(windows_dir_pre+'/data/DICT'+dict_name+filename+'.json', 'w') as f:
+							json.dump(res_count_dict, f)
+							print "dump dictionary..."
 
 			pdb_file.close()
+			print "done, storing dictionary.."
+			with open(windows_dir_pre+'/data/DICT'+dict_name+filename+'.json', 'w') as f:
+				json.dump(res_count_dict, f)
 
-	print "done, storing dictionary.."
-	with open(os.path.join(windows_dir_pre+'/data/DICT',dict_name), 'w') as f:
-		json.dump(res_count_dict, f)
+	
 
