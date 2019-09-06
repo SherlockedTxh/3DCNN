@@ -1,6 +1,5 @@
-# from __future__ import division;
-# from __future__ import print_function;
-# import tables;
+#!/usr/bin/env python
+# -*- encoding: utf-8 -*-
 import numpy
 import os
 import random
@@ -76,8 +75,9 @@ def integrate_20_AA_numpy(dict_name,in_dir, out_dir, num_3d_pixel, num_of_channe
         '''
 
         for filename in os.listdir(in_dir):
-            X = numpy.load(in_dir+filename)
-            print "X.shape:"+X.shape
+            X = numpy.load(in_dir+filename,allow_pickle=True)
+            print "X.shape:"
+            print X.shape
             for tmp in X:
                 y = tmp[1]*numpy.ones((X.shape[0],1))
             equal_examples.append(X)

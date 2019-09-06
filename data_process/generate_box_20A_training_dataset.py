@@ -1,3 +1,5 @@
+#!/usr/bin/env python
+# -*- encoding: utf-8 -*-
 import math
 import numpy
 import os
@@ -502,7 +504,7 @@ if __name__ == '__main__':
 						# 		print "dump dictionary..."
 
 						tmp = []
-						tmp.append((X_smooth),label)
+						tmp.append((X_smooth,label))
 						sample_time_t = numpy.array(tmp)
 						tmp=[]
 
@@ -510,10 +512,10 @@ if __name__ == '__main__':
 						res_count_dict[label]=res_count_dict[label]+1
 						with open(windows_dir_pre+'/data/DICT'+dict_name+filename+'.json', 'w') as f:
 							json.dump(res_count_dict, f)
-							print "dump dictionary..."
+							#print "dump dictionary..."
 
 			pdb_file.close()
-			print "done, storing dictionary.."
+			print "done, storing dictionary.."+filename
 			with open(windows_dir_pre+'/data/DICT'+dict_name+filename+'.json', 'w') as f:
 				json.dump(res_count_dict, f)
 
