@@ -25,13 +25,13 @@ class InfoToInitArrayOnH5File(object):
 
 def writeToDisk(h5file,theH5Column, whatToWrite, batch_size=5000):
 
-    data_size = len(whatToWrite);
-    last = int(data_size / float(batch_size)) * batch_size
-    for i in xrange(0, data_size, batch_size):
-        stop = (i + data_size%batch_size if i >= last
-                else i + batch_size)
-        theH5Column.append(whatToWrite[i:stop]);
-        h5file.flush()
+    #data_size = len(whatToWrite);
+    #last = int(data_size / float(batch_size)) * batch_size
+    #for i in xrange(0, data_size, batch_size):
+    #    stop = (i + data_size%batch_size if i >= last
+    #            else i + batch_size)
+    theH5Column.append(whatToWrite);
+    h5file.flush()
     
 def getH5column(h5file, columnName, nodeName=DEFAULT_NODE_NAME):
     node = h5file.get_node('/', DEFAULT_NODE_NAME);
@@ -93,20 +93,20 @@ if __name__ == "__main__":
     # new
     for filename in os.listdir(windows_dir_pre+"/data/Sampled_Numpy"):
         if filename[0:8] == "X_smooth":
-            X_smooth = numpy.load(windows_dir_pre+"/data/Sampled_Numpy/"+filename)
+            X_smooth = numpy.load(windows_dir_pre+"/data/Sampled_Numpy/"+filename,allow_pickle=True)
             y_filename = "y"+filename[8:]
-            y = numpy.load(windows_dir_pre+"/data/Sampled_Numpy/"+y_filename)
+            y = numpy.load(windows_dir_pre+"/data/Sampled_Numpy/"+y_filename,allow_pickle=True)
         
-        filename_test = windows_dir_pre+"/data/ATOM_CHANNEL_dataset/"+(filename[8:])[:-4]+".pytables"
-        h5file = init_h5_file(filename_test)
-        numSamples = X_smooth.shape[0]
-        
-        initColumnsOnH5File(h5file, [dataInfo,labelInfo], numSamples)
-        dataColumn = getH5column(h5file, dataName)
-        labelColumn = getH5column(h5file, labelName)
-        writeToDisk(h5file,dataColumn, X_smooth)
-        writeToDisk(h5file,labelColumn, y)
-        h5file.close()
+            filename_test = windows_dir_pre+"/data/ATOM_CHANNEL_dataset/"+(filename[9:])[:-4]+".pytables"
+            h5file = init_h5_file(filename_test)
+            numSamples = X_smooth.shape[0]
+
+            initColumnsOnH5File(h5file, [dataInfo,labelInfo], numSamples)
+            dataColumn = getH5column(h5file, dataName)
+            labelColumn = getH5column(h5file, labelName)
+            writeToDisk(h5file,dataColumn, X_smooth)
+            writeToDisk(h5file,labelColumn, y)
+            h5file.close()
 
         '''
         # Writing Train pytables

@@ -80,15 +80,15 @@ def integrate_20_AA_numpy(dict_name,in_dir, out_dir, num_3d_pixel, num_of_channe
             print filename
             print X[0][0].shape
             for tmp in X:
-                y = tmp[1]*numpy.ones((X.shape[0],1))
+                y = tmp[1]
                 equal_examples.append(tmp[0])
                 equal_labels.append(y)
 
             equal_examples=numpy.array(equal_examples)
             equal_labels=numpy.array(equal_labels)
 
-            #print equal_examples.shape
-            #print equal_labels.shape
+            print equal_examples.shape
+            print equal_labels.shape
         
             #equal_examples=numpy.reshape(equal_examples,(X.shape[0], num_of_channels, num_3d_pixel, num_3d_pixel, num_3d_pixel))
             #equal_labels=numpy.reshape(equal_labels,X.shape[0])
