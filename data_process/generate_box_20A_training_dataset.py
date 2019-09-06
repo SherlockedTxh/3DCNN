@@ -487,6 +487,7 @@ if __name__ == '__main__':
                                 ctr_pos.append([ctr,chain_ID,label])
 
                 tmp = []
+                tmp_list = []
                 for pts in ctr_pos:
                     X_smooth, label, reference, box_ori, new_pos_in_box, valid_box  = pts_to_Xsmooth(MODELS,pts,atom_density,num_of_channels,x_dim,pixel_size,num_3d_pixel,box_size,mode)
                     if valid_box:
@@ -504,13 +505,17 @@ if __name__ == '__main__':
                         # 		json.dump(res_count_dict, f)
                         # 		print "dump dictionary..."
 
-                        tmp.append((X_smooth,label))
-                        sample_time_t = numpy.array(tmp)
-
+                        #print X_smooth.shape
+                        #tmp.append((X_smooth,label))
+                        tmp=[X_smooth,label]
+                        tmp_list.append(tmp)
+                        
                         res_count_dict[label]=res_count_dict[label]+1
                         with open(windows_dir_pre+'/data/DICT'+dict_name+filename+'.json', 'w') as f:
                             json.dump(res_count_dict, f)
                             #print "dump dictionary..."
+                sample_time_t = numpy.array(tmp_list)
+                #print sample_time_t[0][0].shape
                 sample_time_t.dump(dat_dir+'/'+filename+'.dat')
 
             pdb_file.close()
