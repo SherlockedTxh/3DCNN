@@ -4,6 +4,7 @@ from __future__ import print_function;
 import tables;
 import numpy
 import sys
+import os
 windows_dir_pre='/mnt/md1/a503tongxueheng/test_data_process'
 DEFAULT_NODE_NAME = "defaultNode";
 
@@ -70,6 +71,7 @@ if __name__ == "__main__":
     dataInfo = InfoToInitArrayOnH5File(dataName, dataShape, tables.Float32Atom());
     labelInfo = InfoToInitArrayOnH5File(labelName, labelShape, tables.Float32Atom());
 
+    '''
     for part in range (1,num_of_parts+1):
         Xv_smooth = numpy.load(windows_dir_pre+"/data/Sampled_Numpy/Xv_smooth_"+str(part)+".dat")
         yv = numpy.load(windows_dir_pre+"/data/Sampled_Numpy/yv_"+str(part)+".dat")
@@ -86,7 +88,27 @@ if __name__ == "__main__":
                 labels = numpy.concatenate((labels,y[:,numpy.newaxis]), axis=0)
 
         labels = numpy.ravel(labels)
+    '''
 
+    # new
+    for filename in os.listdir(windows_dir_pre+"/data/Sampled_Numpy"):
+        if filename[0:8] == "X_smooth":
+            X_smooth = numpy.load(windows_dir_pre+"/data/Sampled_Numpy/"+filename)
+            y_filename = "y"+filename[8:]
+            y = numpy.load(windows_dir_pre+"/data/Sampled_Numpy/"+y_filename)
+        
+        filename_test = windows_dir_pre+"/data/ATOM_CHANNEL_dataset/"+(filename[8:])[:-4]+".pytables"
+        h5file = init_h5_file(filename_test)
+        numSamples = X_smooth.shape[0]
+        
+        initColumnsOnH5File(h5file, [dataInfo,labelInfo], numSamples)
+        dataColumn = getH5column(h5file, dataName)
+        labelColumn = getH5column(h5file, labelName)
+        writeToDisk(h5file,dataColumn, X_smooth)
+        writeToDisk(h5file,labelColumn, y)
+        h5file.close()
+
+        '''
         # Writing Train pytables
         filename_train = windows_dir_pre+"/data/train_data_"+str(part)+".pytables";
         h5file = init_h5_file(filename_train);
@@ -110,3 +132,4 @@ if __name__ == "__main__":
         writeToDisk(h5file,dataColumn, Xv_smooth);
         writeToDisk(h5file,labelColumn, yv);
         h5file.close();
+        '''
