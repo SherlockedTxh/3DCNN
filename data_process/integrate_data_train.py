@@ -93,8 +93,8 @@ def integrate_20_AA_numpy(dict_name,in_dir, out_dir, num_3d_pixel, num_of_channe
             #equal_examples=numpy.reshape(equal_examples,(X.shape[0], num_of_channels, num_3d_pixel, num_3d_pixel, num_3d_pixel))
             #equal_labels=numpy.reshape(equal_labels,X.shape[0])
 
-            equal_examples.dump(windows_dir_pre+"/data/Sampled_Numpy/X_smooth_"+filename+".dat")
-            equal_labels.dump(windows_dir_pre+"/data/Sampled_Numpy/y_"+filename+".dat")
+            equal_examples.dump(windows_dir_pre+"/data/Sampled_Numpy/X_smooth_"+filename)
+            equal_labels.dump(windows_dir_pre+"/data/Sampled_Numpy/y_"+filename)
         
         '''
         # 分训练集和验证集
