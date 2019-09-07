@@ -344,7 +344,6 @@ def train_3DCNN(learning_rate=0.002, n_epochs=10, batch_size=20, filter_w=3, reg
         # print softmax_list[i][0]
         # print yv[i]
         # print len(softmax_list)
-        print i
         meanscore += softmax_list[i][0][int(yv[i])]
     return meanscore/len(softmax_list)
 
@@ -500,7 +499,8 @@ if __name__ == '__main__':
         if filename[-8:] == "pytables":
             fresult = train_3DCNN(learning_rate=0.002, n_epochs=3, batch_size=1, filter_w=3, reg=5e-6, id=cnt, filename=filename[:-8])
             cnt += 1
-            f.write(filnname[:-8]+str(fresult)+'\n')
+            print filename
+            f.write(filename[:-8]+' '+str(fresult)+'\n')
     f.close()
 
 
