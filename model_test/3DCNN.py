@@ -32,7 +32,8 @@ class ConvDropNet(object):
         self.layers = []
         self.dropout_layers = []
 
-        with open('/mnt/md1/a503denglei/weights/weight_3DCNN_gpu_20181217.zip','rb') as f:
+        # with open('/mnt/md1/a503denglei/weights/weight_3DCNN_gpu_20181217.zip','rb') as f:
+        with open('/home/a503tongxueheng/jupyter_project/weight_3DCNN.zip','rb') as f:
             w0,w1,w2,w3,w4,w5,b0,b1,b2,b3,b4,b5=load(f)
         #######
         filter_w = 3
@@ -271,9 +272,9 @@ class ConvDropNet(object):
 
 
 def train_3DCNN(learning_rate=0.002, n_epochs=10, batch_size=20, filter_w=3, reg=5e-6, dropout=True,
-                dropout_rates=[0.3, 0.3, 0.3, 0.3, 0.3]):
+                dropout_rates=[0.3, 0.3, 0.3, 0.3, 0.3], id=0, filename=''):
     rng = numpy.random.RandomState(23455)
-    [all_examples, all_labels, all_train_sizes, test_size, val_size] = load_ATOM_BOX()
+    [all_examples, all_labels, all_train_sizes, test_size, val_size] = load_ATOM_BOX()[id]
 
     Xtr = all_examples[0]
     Xt = all_examples[1]
@@ -281,7 +282,7 @@ def train_3DCNN(learning_rate=0.002, n_epochs=10, batch_size=20, filter_w=3, reg
 
     ytr = all_labels[0]
     yt = all_labels[1]
-    yv = all_labels[2]
+    yv = all_labels[2] #test label
 
     test_set_x, test_set_y = shared_dataset(Xt, yt)
     valid_set_x, valid_set_y = shared_dataset(Xv, yv)
@@ -310,11 +311,11 @@ def train_3DCNN(learning_rate=0.002, n_epochs=10, batch_size=20, filter_w=3, reg
 
     print '... building the model'
 
-    test_model = theano.function(inputs=[index],
-                                 outputs=classifier.errors(y),
-                                 givens={
-                                     x: test_set_x[index * batch_size:(index + 1) * batch_size],
-                                     y: test_set_y[index * batch_size:(index + 1) * batch_size]})
+    # test_model = theano.function(inputs=[index],
+    #                              outputs=classifier.errors(y),
+    #                              givens={
+    #                                  x: test_set_x[index * batch_size:(index + 1) * batch_size],
+    #                                  y: test_set_y[index * batch_size:(index + 1) * batch_size]})
 
     validate_model = theano.function(inputs=[index],
                                      outputs=classifier.errors(y),
@@ -335,17 +336,25 @@ def train_3DCNN(learning_rate=0.002, n_epochs=10, batch_size=20, filter_w=3, reg
                          in range(n_valid_batches)]
 
     print validation_losses
-    #print softmax_list
+    print softmax_list.shape
+
+    meanscore = 0
+    for i in range(0,len(softmax_list)):
+        meanscore += softmax_list[0][y[i]]
+    print meanscore/len(softmax_list)
+
     #print classifier.layers[5].p_y_given_x
     #f = open("/mnt/md1/a503tongxueheng/SoftmaxResults/result.txt", "w")
     #for i in range(n_valid_batches):
-    numpy.save("/mnt/md1/a503tongxueheng/SoftmaxResults/result.npy", softmax_list)
-    numpy.save("/mnt/md1/a503tongxueheng/SoftmaxResults/lossresult.npy", validation_losses)
+    # numpy.save("/mnt/md1/a503tongxueheng/T0864/result/"+filename+"result.npy", softmax_list)
+    # numpy.save("/mnt/md1/a503tongxueheng/T0864/loss_result/"+filename+"lossresult.npy", validation_losses)
     #    f.write(join(softmax_list[i]))
     #f.close()
+
     print 'length:'+str(len(validation_losses))
     print 'evaluation score of predicted protein:'+str(numpy.mean(validation_losses))
     print valid_set_y
+
     # output = dropout_cost if dropout else cost
     # grads = []
     # for param in classifier.params:
@@ -480,6 +489,10 @@ if __name__ == '__main__':
     #args = parser.parse_args()
     #num_epoch = int(args.epoch)
 
-    train_3DCNN(learning_rate=0.002, n_epochs=3, batch_size=1, filter_w=3, reg=5e-6)
+    cnt = 0
+    for filename in os.listdir("/mnt/md1/a503tongxueheng/test_data_process/data/ATOM_CHANNEL_dataset"):
+        if filename[-8:] == "pytables":
+            train_3DCNN(learning_rate=0.002, n_epochs=3, batch_size=1, filter_w=3, reg=5e-6, id=cnt, filename=filename[:-8])
+            cnt += 1
 
 
