@@ -12,6 +12,8 @@ from theano.misc.pkl_utils import dump,load
 import argparse
 import codecs
 
+res_label_dict={'HIS':0,'LYS':1,'ARG':2,'ASP':3,'GLU':4,'SER':5,'THR':6,'ASN':7,'GLN':8,'ALA':9,'VAL':10,'LEU':11,'ILE':12,'MET':13,'PHE':14,'TYR':15,'TRP':16,'PRO':17,'GLY':18,'CYS':19}
+
 class ConvDropNet(object):
     """A multilayer perceptron with all the trappings required to do dropout
     training.
@@ -335,13 +337,15 @@ def train_3DCNN(learning_rate=0.002, n_epochs=10, batch_size=20, filter_w=3, reg
     softmax_list = [softmax_model(i) for i
                          in range(n_valid_batches)]
 
-    print validation_losses
-    print softmax_list.shape
+    #print validation_losses
 
     meanscore = 0
     for i in range(0,len(softmax_list)):
-        meanscore += softmax_list[0][y[i]]
-    print meanscore/len(softmax_list)
+        print softmax_list[i][0]
+        print yv[i]
+        print len(softmax_list)
+        meanscore += softmax_list[i][0][int(yv[i])]
+    return meanscore/len(softmax_list)
 
     #print classifier.layers[5].p_y_given_x
     #f = open("/mnt/md1/a503tongxueheng/SoftmaxResults/result.txt", "w")
@@ -490,9 +494,12 @@ if __name__ == '__main__':
     #num_epoch = int(args.epoch)
 
     cnt = 0
+    f = open("/mnt/md1/a503tongxueheng/SoftmaxResults/result.txt", "a")
     for filename in os.listdir("/mnt/md1/a503tongxueheng/test_data_process/data/ATOM_CHANNEL_dataset"):
         if filename[-8:] == "pytables":
-            train_3DCNN(learning_rate=0.002, n_epochs=3, batch_size=1, filter_w=3, reg=5e-6, id=cnt, filename=filename[:-8])
+            fresult = train_3DCNN(learning_rate=0.002, n_epochs=3, batch_size=1, filter_w=3, reg=5e-6, id=cnt, filename=filename[:-8])
             cnt += 1
+            f.write(str(fresult)+'\n')
+    f.close()
 
 

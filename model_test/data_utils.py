@@ -129,7 +129,7 @@ def load_ATOM_BOX():
     # Same considerations as the above for the test dataset, more val data can be used to tune the hyper-parameters if desired
     for filename in os.listdir("/mnt/md1/a503tongxueheng/test_data_process/data/ATOM_CHANNEL_dataset"):
         #filename_val = "//mnt/md1/a503denglei/datasets/ATOM_CHANNEL_dataset/test_data_" + str(part + 1) + ".pytables";
-        h5file_val = tables.open_file(filename, mode="r")
+        h5file_val = tables.open_file("/mnt/md1/a503tongxueheng/test_data_process/data/ATOM_CHANNEL_dataset/"+filename, mode="r")
         dataColumn_val = getH5column(h5file_val, dataName);
         labelColumn_val = getH5column(h5file_val, labelName);
         Xv = dataColumn_val[:]
