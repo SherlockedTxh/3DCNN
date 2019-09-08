@@ -10,14 +10,14 @@ y1 = []
 y2 = []
 
 f = open("/home/a503tongxueheng/jupyter_project/T0864.txt")
-softmaxfile = open("/home/a503tongxueheng/SoftmaxResults/result.txt")
+softmaxfile = open("/mnt/md1/a503tongxueheng/SoftmaxResults/result.txt")
 infile = list(f)
 infile_softmax = list(softmaxfile)
 Softmax_dict = []
 
 for line in infile_softmax:
     line_data = line.split()
-    Softmax_dict.append(line_data[0][:-1],line_data[1])
+    Softmax_dict.append([line_data[0][:-1],line_data[1]])
 
 for i in range(2,len(infile)):
     line = infile[i].split()
@@ -29,6 +29,8 @@ for i in range(2,len(infile)):
             if data[0] == line[1]:
                 y2.append(100*float(data[1]))
 f.close()
+
+plt.switch_backend('agg')
 
 plt.plot(x,y1,label='GDT_Score')
 plt.plot(x,y2,label='3DCNN_Score')
