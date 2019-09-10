@@ -10,7 +10,7 @@ y1 = []
 y2 = []
 
 f = open("/home/a503tongxueheng/jupyter_project/T0864.txt")
-softmaxfile = open("/mnt/md1/a503tongxueheng/SoftmaxResults/result.txt")
+softmaxfile = open("/mnt/md1/a503tongxueheng/SoftmaxResults/rank_result.txt")
 infile = list(f)
 infile_softmax = list(softmaxfile)
 Softmax_dict = []

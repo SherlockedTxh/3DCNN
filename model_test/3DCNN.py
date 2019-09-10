@@ -339,13 +339,22 @@ def train_3DCNN(learning_rate=0.002, n_epochs=10, batch_size=20, filter_w=3, reg
 
     #print validation_losses
 
-    meanscore = 0
     for i in range(0,len(softmax_list)):
         # print softmax_list[i][0]
         # print yv[i]
         # print len(softmax_list)
-        meanscore += softmax_list[i][0][int(yv[i])]
-    return meanscore/len(softmax_list)
+        score = softmax_list[i][0][int(yv[i])]
+        rank = 0
+        rankscore = 1.0 
+        scoresum = 0.0
+        for j in range(0,20):
+            if core < softmax_list[i][0][j]:
+                rank += 1
+                rankscore -= 0.05
+            scoresum += rankscore
+        print rank
+
+    return scoresum/len(softmax_list)
 
     #print classifier.layers[5].p_y_given_x
     #f = open("/mnt/md1/a503tongxueheng/SoftmaxResults/result.txt", "w")
@@ -494,7 +503,7 @@ if __name__ == '__main__':
     #num_epoch = int(args.epoch)
 
     cnt = 0
-    f = open("/mnt/md1/a503tongxueheng/SoftmaxResults/result.txt", "a+")
+    f = open("/mnt/md1/a503tongxueheng/SoftmaxResults/rank_result.txt", "a+")
     for filename in os.listdir("/mnt/md1/a503tongxueheng/test_data_process/data/ATOM_CHANNEL_dataset"):
         if filename[-8:] == "pytables":
             fresult = train_3DCNN(learning_rate=0.002, n_epochs=3, batch_size=1, filter_w=3, reg=5e-6, id=cnt, filename=filename[:-8])
