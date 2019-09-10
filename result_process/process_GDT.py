@@ -41,5 +41,5 @@ plt.ylabel('GDT Score/3DCNN Score')   # set ystick label
 plt.xlabel('T0864')  # set xstck label
 pylab.xticks(rotation=90) 
 
-plt.savefig('snapshots.eps',dpi = 1000,bbox_inches='tight')
+plt.savefig('snapshots_new.eps',dpi = 1000,bbox_inches='tight')
 plt.show()

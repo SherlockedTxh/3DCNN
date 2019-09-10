@@ -339,20 +339,22 @@ def train_3DCNN(learning_rate=0.002, n_epochs=10, batch_size=20, filter_w=3, reg
 
     #print validation_losses
 
+    scoresum = 0.0
     for i in range(0,len(softmax_list)):
-        # print softmax_list[i][0]
-        # print yv[i]
+        print softmax_list[i][0]
+        print yv[i]
         # print len(softmax_list)
         score = softmax_list[i][0][int(yv[i])]
         rank = 0
         rankscore = 1.0 
-        scoresum = 0.0
         for j in range(0,20):
-            if core < softmax_list[i][0][j]:
+            if score < softmax_list[i][0][j]:
                 rank += 1
                 rankscore -= 0.05
-            scoresum += rankscore
+        scoresum += rankscore
         print rank
+        print rankscore
+        print scoresum/len(softmax_list)
 
     return scoresum/len(softmax_list)
 
