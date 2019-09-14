@@ -353,10 +353,10 @@ def train_3DCNN(learning_rate=0.002, n_epochs=10, batch_size=20, filter_w=3, reg
                 rankscore -= 0.05
         scoresum += rankscore
         print rank
-        print rankscore
-        print scoresum/len(softmax_list)
+        # print rankscore
+        # print scoresum/len(softmax_list)
 
-    return scoresum/len(softmax_list)
+    return rank
 
     #print classifier.layers[5].p_y_given_x
     #f = open("/mnt/md1/a503tongxueheng/SoftmaxResults/result.txt", "w")
@@ -505,7 +505,7 @@ if __name__ == '__main__':
     #num_epoch = int(args.epoch)
 
     cnt = 0
-    f = open("/mnt/md1/a503tongxueheng/SoftmaxResults/rank_result.txt", "a+")
+    f = open("/mnt/md1/a503tongxueheng/SoftmaxResults/rank.txt", "a+")
     for filename in os.listdir("/mnt/md1/a503tongxueheng/test_data_process/data/ATOM_CHANNEL_dataset"):
         if filename[-8:] == "pytables":
             fresult = train_3DCNN(learning_rate=0.002, n_epochs=3, batch_size=1, filter_w=3, reg=5e-6, id=cnt, filename=filename[:-8])

@@ -10,7 +10,7 @@ y1 = []
 y2 = []
 
 f = open("/home/a503tongxueheng/jupyter_project/T0864.txt")
-softmaxfile = open("/mnt/md1/a503tongxueheng/SoftmaxResults/rank_result.txt")
+softmaxfile = open("/mnt/md1/a503tongxueheng/SoftmaxResults/rank.txt")
 infile = list(f)
 infile_softmax = list(softmaxfile)
 Softmax_dict = []
@@ -27,7 +27,7 @@ for i in range(2,len(infile)):
         y1.append(float(line[3]))
         for data in Softmax_dict:
             if data[0] == line[1]:
-                y2.append(100*float(data[1]))
+                y2.append(1-0.0625*(int(data[1])+1))
 f.close()
 
 plt.switch_backend('agg')
@@ -41,5 +41,5 @@ plt.ylabel('GDT Score/3DCNN Score')   # set ystick label
 plt.xlabel('T0864')  # set xstck label
 pylab.xticks(rotation=90) 
 
-plt.savefig('snapshots_new.eps',dpi = 1000,bbox_inches='tight')
+plt.savefig('snapshots_rank.eps',dpi = 1000,bbox_inches='tight')
 plt.show()
